@@ -1,3 +1,16 @@
+use super::read_input_into_vector;
+use super::calibration_values;
+
 pub fn solution() {
-    println!("day_1 second solution!");
+    match read_input_into_vector() {
+        Ok(lines) => {
+            println!(
+                "Day 1: 'calibration values spelled digits' - {}",
+                calibration_values(lines, true)
+            );
+        }
+        Err(err) => {
+            println!("\u{001b}[0mCould not load the file: {}", err)
+        }
+    };
 }

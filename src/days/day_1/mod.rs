@@ -1,7 +1,131 @@
+use std::collections::HashMap;
+use std::fs::File;
+use std::io;
+use std::io::BufRead;
+
 mod first_question;
 mod second_question;
 
 pub fn solutions() {
     first_question::solution();
     second_question::solution();
+}
+
+fn read_input_into_vector() -> io::Result<Vec<String>> {
+    let file = File::open("./src/days/day_1/input")?;
+    let reader = io::BufReader::new(&file);
+
+    let mut lines = Vec::new();
+
+    for line in reader.lines() {
+        lines.push(line?);
+    }
+
+    Ok(lines)
+}
+
+// Calculator of this quiz
+fn calibration_values(lines: Vec<String>, spelled_digit: bool) -> u32 {
+    let mut result: u32 = 0;
+
+    // Iterating over every every line given in file
+    for line in lines {
+        let mut resulting_number: String = "".to_string();
+
+        let mut found_numbers_at_place: HashMap<u8, u8> = HashMap::new();
+
+        // Iterating over every char of that string
+        for (index, char) in line.chars().enumerate() {
+            // Checking for number
+            if char.is_numeric() {
+                // Fixing the conversion issues by adding " - b'0"
+                found_numbers_at_place.insert(index as u8, char as u8 - b'0');
+            }
+        }
+
+        if spelled_digit {
+            // Merging both HashMaps together (with the spelled one)
+            found_numbers_at_place.extend(spelled_digit_matcher(&line));
+        }
+
+        let smallest_key = found_numbers_at_place.keys().min();
+        let char_by_smallest_index = match smallest_key {
+            Some(&key) => {
+                let value = found_numbers_at_place.get(&key); // Get the value associated with the minimum key
+                match value {
+                    Some(val) => val,
+                    None => panic!("Something went wrong during HashMap checking for smallest key"),
+                }
+            }
+            None => panic!("Something went wrong during HashMap checking for smallest key"),
+        };
+
+        // Fallback if only one has been found
+        if found_numbers_at_place.len() < 2 {
+            // Fixing the conversion issues by adding " + b'0'"
+            resulting_number.push((*char_by_smallest_index + b'0') as char);
+            resulting_number.push((*char_by_smallest_index + b'0') as char);
+        // Finding the smallest and the biggest index
+        } else {
+            let biggest_key = found_numbers_at_place.keys().max();
+            let char_by_biggest_index = match biggest_key {
+                Some(&key) => {
+                    let value = found_numbers_at_place.get(&key); // Get the value associated with the minimum key
+                    match value {
+                        Some(val) => val,
+                        None => panic!("Something went wrong during HashMap checking for smallest key"),
+                    }
+                }
+                None => panic!("Something went wrong during HashMap checking for smallest key"),
+            };
+
+            // Fixing the conversion issues by adding " + b'0'"
+            resulting_number.push((*char_by_smallest_index + b'0') as char);
+            resulting_number.push((*char_by_biggest_index + b'0') as char);
+        }
+
+        match resulting_number.parse::<u32>() {
+            Ok(parsed_num) => {
+                result += parsed_num;
+            }
+            Err(err) => {
+                println!("Error parsing: {:?} {}", &resulting_number, err);
+            }
+        }
+    }
+
+    result
+}
+
+// Check the giving string if a spelled digit is present
+// if found multiple, the bool low indicates if the lower or the higher one is to be returned
+fn spelled_digit_matcher (string_to_check: &str) -> HashMap<u8, u8> {
+    let mut numbers_map: HashMap<&str, u8> = HashMap::new();
+    let mut found_at_place: HashMap<u8, u8> = HashMap::new();
+
+    numbers_map.insert("one" , 1);
+    numbers_map.insert("two" , 2);
+    numbers_map.insert("three" , 3);
+    numbers_map.insert("four" , 4);
+    numbers_map.insert("five" , 5);
+    numbers_map.insert("six" , 6);
+    numbers_map.insert("seven" , 7);
+    numbers_map.insert("eight" , 8);
+    numbers_map.insert("nine" , 9);
+
+    for (spelled_digit, digit) in numbers_map.iter() {
+        let found_first: usize = string_to_check.find(spelled_digit).unwrap_or(0);
+        if found_first != 0 {
+            found_at_place.insert(found_first as u8, *digit);
+        }
+    }
+
+    for (spelled_digit, digit) in numbers_map.iter() {
+        let found_last: usize = string_to_check.rfind(spelled_digit).unwrap_or(0);
+        if found_last != 0 {
+            found_at_place.insert(found_last as u8, *digit);
+        }
+    }
+
+    found_at_place
 }
