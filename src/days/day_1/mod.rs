@@ -114,16 +114,15 @@ fn spelled_digit_matcher (string_to_check: &str) -> HashMap<u8, u8> {
     numbers_map.insert("nine" , 9);
 
     for (spelled_digit, digit) in numbers_map.iter() {
-        let found_first: usize = string_to_check.find(spelled_digit).unwrap_or(0);
-        if found_first != 0 {
-            found_at_place.insert(found_first as u8, *digit);
+        if let Some(value) =  string_to_check.find(spelled_digit) {
+            found_at_place.insert(value as u8, *digit);
         }
     }
 
     for (spelled_digit, digit) in numbers_map.iter() {
-        let found_last: usize = string_to_check.rfind(spelled_digit).unwrap_or(0);
-        if found_last != 0 {
-            found_at_place.insert(found_last as u8, *digit);
+        if let Some(rvalue) = string_to_check.rfind(spelled_digit) {
+            found_at_place.insert(rvalue as u8, *digit);
+
         }
     }
 
