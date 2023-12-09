@@ -3,7 +3,6 @@ mod game;
 use game::Game;
 use game::GAME_CONFIGURATION;
 use std::collections::HashMap;
-use std::ops::Add;
 
 mod first_question;
 mod second_question;
@@ -39,12 +38,12 @@ fn get_games_from_line(games_line: &str) -> HashMap<u8, Game> {
     if let Some(games) = games_line.split(':').nth(1) {
         // Checking game line for single games
         //  3 green, 7 blue, 5 red; 3 green, 6 red; 11 blue, 6 red, 1 green
-        for game_string in games.split(';').into_iter() {
+        for game_string in games.split(';') {
             let mut game: Game = Game::default();
 
             // Breaking down the games. Checking for colours and fallback to 0 if one is not given
             //  3 green, 7 blue, 5 red
-            for colour in game_string.split(',').into_iter() {
+            for colour in game_string.split(',') {
                 // We can have spaces at the beginning and at the end :(
                 let sanitized_colour = colour.trim_start_matches(' ').trim_end_matches(' ');
                 let colour_split = sanitized_colour.split(' ');
@@ -52,7 +51,7 @@ fn get_games_from_line(games_line: &str) -> HashMap<u8, Game> {
                 let colour_int: u8;
                 let colour_string: &str;
 
-                if let Some(colour_split) = colour_split.clone().nth(0) {
+                if let Some(colour_split) = colour_split.clone().next() {
                     colour_int = colour_split.parse::<u8>().unwrap();
                 } else {
                     panic!("Could not find colour's int for {}", colour)
