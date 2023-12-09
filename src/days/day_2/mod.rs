@@ -1,7 +1,6 @@
 mod game;
 
 use game::Game;
-use game::GAME_CONFIGURATION;
 use std::collections::HashMap;
 
 mod first_question;
@@ -82,35 +81,3 @@ fn get_games_from_line(games_line: &str) -> HashMap<u8, Game> {
     games_map
 }
 
-fn is_game_possible(game: Game) -> bool {
-    if game.red > GAME_CONFIGURATION.red
-        || game.green > GAME_CONFIGURATION.green
-        || game.blue > GAME_CONFIGURATION.blue
-    {
-        return false;
-    }
-
-    true
-}
-
-fn calculate_games(lines: Vec<String>) -> u32 {
-    let mut result: u32 = 0;
-
-    // Checking all lines
-    'lines: for line in lines {
-        let id: u32 = get_game_id_from_line(&line);
-        let games: HashMap<u8, Game> = get_games_from_line(&line);
-
-        // Checking all games per line. If one is negative -> don't add to result
-        for (_index, game) in games {
-            if !is_game_possible(game) {
-                continue 'lines;
-            }
-        }
-
-        // Making sure to add the id of possible game
-        result += id;
-    }
-
-    result
-}
