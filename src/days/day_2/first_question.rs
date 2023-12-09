@@ -1,7 +1,7 @@
-use std::collections::HashMap;
 use crate::days::day_2::game::{Game, GAME_CONFIGURATION};
 use crate::days::day_2::{get_game_id_from_line, get_games_from_line};
 use crate::days::read_input_into_vector;
+use std::collections::HashMap;
 
 pub fn solution() {
     match read_input_into_vector("./src/days/day_2/input") {

@@ -80,4 +80,3 @@ fn get_games_from_line(games_line: &str) -> HashMap<u8, Game> {
 
     games_map
 }
-
