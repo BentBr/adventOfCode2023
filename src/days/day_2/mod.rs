@@ -1,9 +1,9 @@
 mod game;
 
-use std::collections::HashMap;
-use std::ops::Add;
 use game::Game;
 use game::GAME_CONFIGURATION;
+use std::collections::HashMap;
+use std::ops::Add;
 
 mod first_question;
 mod second_question;
@@ -69,7 +69,7 @@ fn get_games_from_line(games_line: &str) -> HashMap<u8, Game> {
                     "red" => game.red = colour_int,
                     "green" => game.green = colour_int,
                     "blue" => game.blue = colour_int,
-                    _ => panic!("Could not match the colour {}", colour_string)
+                    _ => panic!("Could not match the colour {}", colour_string),
                 }
             }
 
@@ -104,7 +104,7 @@ fn calculate_games(lines: Vec<String>) -> u32 {
 
         // Checking all games per line. If one is negative -> don't add to result
         for (_index, game) in games {
-            if ! is_game_possible(game) {
+            if !is_game_possible(game) {
                 continue 'lines;
             }
         }

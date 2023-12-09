@@ -9,11 +9,7 @@ pub struct Game {
 
 impl Game {
     pub fn new(red: u8, green: u8, blue: u8) -> Self {
-        Game {
-            red,
-            green,
-            blue
-        }
+        Game { red, green, blue }
     }
 
     // Associated function to provide default values
