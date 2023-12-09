@@ -1,8 +1,8 @@
 use super::calibration_values;
-use super::read_input_into_vector;
+use super::super::read_input_into_vector;
 
 pub fn solution() {
-    match read_input_into_vector() {
+    match read_input_into_vector("./src/days/day_1/input") {
         Ok(lines) => {
             println!(
                 "Day 1: 'calibration values spelled digits' - {}",

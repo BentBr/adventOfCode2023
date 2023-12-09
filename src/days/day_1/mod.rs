@@ -1,7 +1,4 @@
 use std::collections::HashMap;
-use std::fs::File;
-use std::io;
-use std::io::BufRead;
 
 mod first_question;
 mod second_question;
@@ -9,19 +6,6 @@ mod second_question;
 pub fn solutions() {
     first_question::solution();
     second_question::solution();
-}
-
-fn read_input_into_vector() -> io::Result<Vec<String>> {
-    let file = File::open("./src/days/day_1/input")?;
-    let reader = io::BufReader::new(&file);
-
-    let mut lines = Vec::new();
-
-    for line in reader.lines() {
-        lines.push(line?);
-    }
-
-    Ok(lines)
 }
 
 // Calculator of this quiz
