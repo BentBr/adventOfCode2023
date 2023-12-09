@@ -19,6 +19,10 @@ fn calculate_schematic_sum(lines: Vec<String>) -> u32 {
     let mut returning_sum: u32 = 0;
 
     for (index, line) in lines.iter().enumerate() {
+        if line.is_empty() {
+            continue;
+        }
+
         let mut previous_line: &String = &"".to_string();
         let mut next_line: &String = &"".to_string();
 
@@ -30,6 +34,7 @@ fn calculate_schematic_sum(lines: Vec<String>) -> u32 {
         }
 
         let valid_part_numbers: Vec<u32> = get_valid_part_numbers(line, previous_line, next_line);
+
         let valid_sum: u32 = valid_part_numbers.iter().sum();
         returning_sum += valid_sum;
     }
@@ -37,7 +42,7 @@ fn calculate_schematic_sum(lines: Vec<String>) -> u32 {
     returning_sum
 }
 
-fn get_valid_part_numbers(line: &String, previous_line: &String, next_line: &String) -> Vec<u32> {
+fn get_valid_part_numbers(line: &str, previous_line: &str, next_line: &str) -> Vec<u32> {
     let numbers_map: HashMap<u8, u16> = get_numbers_from_line(line);
     let mut valid_numbers: Vec<u32> = Default::default();
 
@@ -69,6 +74,16 @@ fn get_numbers_from_line(line: &str) -> HashMap<u8, u16> {
     for (index, char) in line.chars().enumerate() {
         if char.is_numeric() {
             current_number_string.push(char);
+
+            // Edge case for last one
+            if index == line.chars().count() - 1 {
+                let new_index = index - current_number_string.len();
+
+                numbers_map.insert(
+                    new_index as u8,
+                    current_number_string.clone().parse::<u16>().unwrap(),
+                );
+            }
         } else if !current_number_string.is_empty() {
             let new_index = index - current_number_string.len();
 
@@ -104,7 +119,7 @@ fn is_part_number_relevant(
     let min_index = index_of_number;
     let max_index = index_of_number + number.to_string().len() as u8 - 1;
 
-    for (symbol_index, _symbol) in symbols_in_line {
+    for (symbol_index, _) in symbols_in_line {
         // We are checking for the range of those indices (depending on the len() of the number)
         let within_range = symbol_index >= min_index && symbol_index <= max_index + 1;
         let within_overflow_range =
