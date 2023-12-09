@@ -73,7 +73,9 @@ fn calibration_values(lines: Vec<String>, spelled_digit: bool) -> u32 {
                     let value = found_numbers_at_place.get(&key); // Get the value associated with the minimum key
                     match value {
                         Some(val) => val,
-                        None => panic!("Something went wrong during HashMap checking for smallest key"),
+                        None => {
+                            panic!("Something went wrong during HashMap checking for smallest key")
+                        }
                     }
                 }
                 None => panic!("Something went wrong during HashMap checking for smallest key"),
@@ -99,22 +101,22 @@ fn calibration_values(lines: Vec<String>, spelled_digit: bool) -> u32 {
 
 // Check the giving string if a spelled digit is present
 // if found multiple, the bool low indicates if the lower or the higher one is to be returned
-fn spelled_digit_matcher (string_to_check: &str) -> HashMap<u8, u8> {
+fn spelled_digit_matcher(string_to_check: &str) -> HashMap<u8, u8> {
     let mut numbers_map: HashMap<&str, u8> = HashMap::new();
     let mut found_at_place: HashMap<u8, u8> = HashMap::new();
 
-    numbers_map.insert("one" , 1);
-    numbers_map.insert("two" , 2);
-    numbers_map.insert("three" , 3);
-    numbers_map.insert("four" , 4);
-    numbers_map.insert("five" , 5);
-    numbers_map.insert("six" , 6);
-    numbers_map.insert("seven" , 7);
-    numbers_map.insert("eight" , 8);
-    numbers_map.insert("nine" , 9);
+    numbers_map.insert("one", 1);
+    numbers_map.insert("two", 2);
+    numbers_map.insert("three", 3);
+    numbers_map.insert("four", 4);
+    numbers_map.insert("five", 5);
+    numbers_map.insert("six", 6);
+    numbers_map.insert("seven", 7);
+    numbers_map.insert("eight", 8);
+    numbers_map.insert("nine", 9);
 
     for (spelled_digit, digit) in numbers_map.iter() {
-        if let Some(value) =  string_to_check.find(spelled_digit) {
+        if let Some(value) = string_to_check.find(spelled_digit) {
             found_at_place.insert(value as u8, *digit);
         }
     }
@@ -122,7 +124,6 @@ fn spelled_digit_matcher (string_to_check: &str) -> HashMap<u8, u8> {
     for (spelled_digit, digit) in numbers_map.iter() {
         if let Some(rvalue) = string_to_check.rfind(spelled_digit) {
             found_at_place.insert(rvalue as u8, *digit);
-
         }
     }
 

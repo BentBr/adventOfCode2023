@@ -1,5 +1,5 @@
-use super::read_input_into_vector;
 use super::calibration_values;
+use super::read_input_into_vector;
 
 pub fn solution() {
     match read_input_into_vector() {
