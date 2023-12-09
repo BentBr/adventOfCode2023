@@ -5,7 +5,7 @@ pub fn solution() {
     match read_input_into_vector("./src/days/day_3/input") {
         Ok(lines) => {
             println!(
-                "Day 2: 'Schematic sum' - {}",
+                "Day 3: 'Schematic sum' - {}",
                 calculate_schematic_sum(lines)
             );
         }
@@ -77,7 +77,8 @@ fn get_numbers_from_line(line: &str) -> HashMap<u8, u16> {
 
             // Edge case for last one
             if index == line.chars().count() - 1 {
-                let new_index = index - current_number_string.len();
+                // Here we are adding 1 due to the fact of not yet being in next loop (will never be)
+                let new_index = index - current_number_string.len() + 1;
 
                 numbers_map.insert(
                     new_index as u8,
