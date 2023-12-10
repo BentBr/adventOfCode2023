@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-
+use std::collections::HashSet;
 mod first_question;
 mod second_question;
 
@@ -8,48 +7,63 @@ pub fn solutions() {
     second_question::solution();
 }
 
-// Returns a HashMap of indices where certain numbers start and the number it self.
-fn get_numbers_from_line(line: &str) -> HashMap<u8, u16> {
-    let mut numbers_map: HashMap<u8, u16> = Default::default();
-    let mut current_number_string: String = "".to_string();
+fn get_count_of_matching_winning_numbers(
+    winning_numbers: Vec<u8>,
+    scratched_numbers: Vec<u8>,
+) -> u32 {
+    let set1: HashSet<_> = winning_numbers.into_iter().collect();
+    let set2: HashSet<_> = scratched_numbers.into_iter().collect();
 
-    for (index, char) in line.chars().enumerate() {
-        if char.is_numeric() {
-            current_number_string.push(char);
+    let intersection: HashSet<u8> = set1.intersection(&set2).cloned().collect();
+    let intersection_vec: Vec<u8> = intersection.into_iter().collect();
 
-            // Edge case for last one
-            if index == line.chars().count() - 1 {
-                // Here we are adding 1 due to the fact of not yet being in next loop (will never be)
-                let new_index = index - current_number_string.len() + 1;
-
-                numbers_map.insert(
-                    new_index as u8,
-                    current_number_string.clone().parse::<u16>().unwrap(),
-                );
-            }
-        } else if !current_number_string.is_empty() {
-            let new_index = index - current_number_string.len();
-
-            numbers_map.insert(
-                new_index as u8,
-                current_number_string.clone().parse::<u16>().unwrap(),
-            );
-            current_number_string = "".to_string();
-        }
-    }
-
-    numbers_map
+    intersection_vec.len() as u32
 }
 
-// Returns a HashMap of indices where certain symbols reside inside a line
-fn get_symbols_from_line(line: &str) -> HashMap<u8, char> {
-    let mut symbols_map: HashMap<u8, char> = Default::default();
+fn get_card_numbers_from_line(line: &str, left: bool) -> Vec<u8> {
+    let mut card_numbers: Vec<u8> = Default::default();
 
-    for (index, char) in line.chars().enumerate() {
-        if !char.is_numeric() && char != ".".chars().next().unwrap_or_default() {
-            symbols_map.insert(index as u8, char);
+    let nth: usize = match left {
+        true => 0,
+        false => 1,
+    };
+
+    if let Some(numbers) = line.split(':').nth(1) {
+        let mut trimmed_numbers = numbers.trim_end_matches(' ');
+        trimmed_numbers = trimmed_numbers.trim_start_matches(' ');
+
+        if let Some(number_side) = trimmed_numbers.split('|').nth(nth) {
+            let mut trimmed_number_side = number_side.trim_end_matches(' ');
+            trimmed_number_side = trimmed_number_side.trim_start_matches(' ');
+
+            for found_card_number in trimmed_number_side.split(' ') {
+                if found_card_number.is_empty() {
+                    continue;
+                }
+
+                let number = found_card_number.trim_matches(' ');
+                let number_int: u8 = number.parse::<u8>().unwrap();
+
+                card_numbers.push(number_int);
+            }
         }
     }
 
-    symbols_map
+    card_numbers
+}
+
+fn get_id_from_line(line: &str) -> u8 {
+    let mut id: u8 = 0;
+
+    if let Some(game_id_string) = line.split(':').next() {
+        if let Some(game_id) = game_id_string.split(' ').nth(1) {
+            id = game_id.parse::<u8>().unwrap();
+        }
+    }
+
+    if id == 0 {
+        panic!("Did not parse a game card id properly: {}", line);
+    }
+
+    id
 }

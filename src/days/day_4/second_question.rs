@@ -1,14 +1,23 @@
-use super::get_numbers_from_line;
-use super::get_symbols_from_line;
+use super::get_card_numbers_from_line;
+use super::get_count_of_matching_winning_numbers;
+use super::get_id_from_line;
 use crate::days::read_input_into_vector;
-use std::collections::HashMap;
+use std::num::ParseIntError;
+
+#[derive(Debug, Clone)]
+struct Card {
+    _id: u8,
+    amount: u32,
+    winning_numbers: Vec<u8>,
+    scratched_numbers: Vec<u8>,
+}
 
 pub fn solution() {
-    match read_input_into_vector("./src/days/day_3/input") {
+    match read_input_into_vector("./src/days/day_4/input") {
         Ok(lines) => {
             println!(
-                "Day 3: 'Gear ratio sum' - {}",
-                calculate_gear_ratio_sum(lines)
+                "Day 4: 'Scratch card amount via iterator' - {}",
+                calculate_scratching_card_iterator(lines)
             );
         }
         Err(err) => {
@@ -17,121 +26,87 @@ pub fn solution() {
     };
 }
 
-fn calculate_gear_ratio_sum(lines: Vec<String>) -> u32 {
-    let mut returning_sum: u32 = 0;
+fn calculate_scratching_card_iterator(lines: Vec<String>) -> u32 {
+    let mut game_cards: Vec<Card> = vec![];
 
-    for (index, line) in lines.iter().enumerate() {
-        if line.is_empty() {
-            continue;
-        }
-
-        let mut previous_line: &String = &"".to_string();
-        let mut next_line: &String = &"".to_string();
-
-        if index != 0 {
-            previous_line = lines.get(index - 1).unwrap();
-        }
-        if index + 1 != lines.len() {
-            next_line = lines.get(index + 1).unwrap();
-        }
-
-        let gear_ratios: Vec<u32> = get_ratios_for_line(line, previous_line, next_line);
-        let gear_ratio_sum: u32 = gear_ratios.iter().sum();
-        returning_sum += gear_ratio_sum;
+    // Getting all lines into scratching cards
+    for line in lines {
+        game_cards.push(create_card_from_line(line.as_str()));
     }
 
-    returning_sum
-}
+    // Iterating over the cards and updating the Card struct for each winning
+    let different_game_cards = (game_cards.len() - 1) as u8;
+    for card_id in 0..different_game_cards {
+        // Getting the amount of winnings
+        let card: &Card = game_cards.get(card_id as usize).unwrap();
 
-fn get_ratios_for_line(line: &str, previous_line: &str, next_line: &str) -> Vec<u32> {
-    let mut gear_ratios: Vec<u32> = Default::default();
-    let symbols = get_symbols_from_line(line);
-    let gear_candidates = get_gear_candidates_from_symbols(symbols);
+        let winning_amount = get_count_of_matching_winning_numbers(
+            card.winning_numbers.clone(),
+            card.scratched_numbers.clone(),
+        );
 
-    for (gear_candidate_index, _) in gear_candidates {
-        let gear = get_gear_from_candidate(gear_candidate_index, previous_line, line, next_line);
+        // Used for multiple adds if already a clone happened
+        let card_clones: u32 = card.amount;
 
-        if !gear.is_empty() {
-            gear_ratios.push(calculate_gear_ratio(gear))
-        }
-    }
-
-    gear_ratios
-}
-
-fn get_gear_from_candidate(
-    gear_candidate_index: u8,
-    previous_line: &str,
-    current_line: &str,
-    next_line: &str,
-) -> Vec<u16> {
-    let mut return_gear_vector: Vec<u16> = Default::default();
-
-    let numbers_line_map: [HashMap<u8, u16>; 3] = [
-        get_numbers_from_line(previous_line),
-        get_numbers_from_line(current_line),
-        get_numbers_from_line(next_line),
-    ];
-
-    for numbers_of_line in numbers_line_map {
-        for (number_index, number) in &numbers_of_line {
-            if !numbers_of_line.is_empty()
-                && is_part_number_relevant(&gear_candidate_index, number_index, number)
-            {
-                return_gear_vector.push(*number);
+        // Adding + 1 for each following card
+        for win in 0..winning_amount + 1 {
+            if win == 0 {
+                continue;
             }
+            let win_str = win.to_string();
+
+            let parsed_win: Result<usize, ParseIntError> = win_str.parse::<usize>();
+            let next_index: usize = match parsed_win {
+                Ok(parsed) => usize::from(card_id) + parsed,
+                Err(e) => {
+                    panic!("Error parsing win: {:?}", e);
+                }
+            };
+
+            //let next_index: usize = usize::from(card_id) + next_index;
+            let card: &mut Card = game_cards.get_mut(next_index).unwrap();
+
+            card.add_clone_to_card(card_clones);
         }
     }
 
-    // Checking length: only exact 2 are allowed
-    if return_gear_vector.len() != 2 {
-        let defaulting_zero: Vec<u16> = Default::default();
-        return defaulting_zero;
-    }
-
-    return_gear_vector
+    sum_cards(game_cards)
 }
 
-fn calculate_gear_ratio(gear: Vec<u16>) -> u32 {
-    if gear.len() > 2 {
-        panic!("This is not a gear (too many part numbers): {:?}", gear)
-    }
+fn create_card_from_line(line: &str) -> Card {
+    let id = get_id_from_line(line);
+    let winning_numbers: Vec<u8> = get_card_numbers_from_line(line, true);
+    let scratched_numbers: Vec<u8> = get_card_numbers_from_line(line, false);
+    let card: Card = Card::new(id, winning_numbers, scratched_numbers);
 
-    #[allow(clippy::get_first)]
-    let first_part: u32 = *gear.get(0).unwrap() as u32;
-    let second_part: u32 = *gear.get(1).unwrap() as u32;
-
-    let result: u32 = first_part * second_part;
-
-    result
+    card
 }
 
-fn get_gear_candidates_from_symbols(symbols: HashMap<u8, char>) -> HashMap<u8, char> {
-    let mut return_map: HashMap<u8, char> = Default::default();
+fn sum_cards(game_cards: Vec<Card>) -> u32 {
+    let mut card_sum: u32 = 0;
 
-    for (index, symbol) in symbols {
-        if symbol == "*".chars().next().unwrap() {
-            return_map.insert(index, symbol);
-        }
+    for card in game_cards {
+        card_sum += card.amount;
     }
 
-    return_map
+    card_sum
 }
 
-fn is_part_number_relevant(index_of_gear_candidate: &u8, number_index: &u8, number: &u16) -> bool {
-    let min_index: &u8 = number_index;
-    let max_index: u8 = number_index + number.to_string().len() as u8 - 1;
+impl Card {
+    fn new(id: u8, winning_numbers: Vec<u8>, scratched_numbers: Vec<u8>) -> Card {
+        let card: Card = Card {
+            _id: id - 1,
+            amount: 1,
+            winning_numbers,
+            scratched_numbers,
+        };
 
-    // We are checking for the range of those indices (depending on the len() of the number)
-    let within_range =
-        index_of_gear_candidate >= min_index && index_of_gear_candidate <= &(max_index + 1);
-    let within_overflow_range = min_index > &0
-        && index_of_gear_candidate >= &(min_index - 1)
-        && index_of_gear_candidate <= &(max_index + 1);
-
-    if within_range || within_overflow_range {
-        return true;
+        card
     }
 
-    false
+    fn add_clone_to_card(&mut self, amount: u32) -> &mut Card {
+        self.amount += amount;
+
+        self
+    }
 }
