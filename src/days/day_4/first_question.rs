@@ -1,5 +1,5 @@
 use crate::days::read_input_into_vector;
-use std::collections::{HashSet};
+use std::collections::HashSet;
 
 pub fn solution() {
     match read_input_into_vector("./src/days/day_4/input") {
@@ -22,10 +22,8 @@ fn calculate_scratchcard_sum(lines: Vec<String>) -> u32 {
         let winning_numbers: Vec<u8> = get_card_numbers_from_line(line, true);
         let scratched_numbers: Vec<u8> = get_card_numbers_from_line(line, false);
 
-        let count_of_matching_winning_numbers: u32 = get_count_of_matching_winning_numbers(
-            winning_numbers,
-            scratched_numbers
-        );
+        let count_of_matching_winning_numbers: u32 =
+            get_count_of_matching_winning_numbers(winning_numbers, scratched_numbers);
 
         if count_of_matching_winning_numbers > 0 {
             let calculated_points: u32 = (2u32).pow(count_of_matching_winning_numbers - 1);
@@ -37,7 +35,10 @@ fn calculate_scratchcard_sum(lines: Vec<String>) -> u32 {
     returning_sum
 }
 
-fn get_count_of_matching_winning_numbers(winning_numbers: Vec<u8>, scratched_numbers: Vec<u8>) -> u32 {
+fn get_count_of_matching_winning_numbers(
+    winning_numbers: Vec<u8>,
+    scratched_numbers: Vec<u8>,
+) -> u32 {
     let set1: HashSet<_> = winning_numbers.into_iter().collect();
     let set2: HashSet<_> = scratched_numbers.into_iter().collect();
 
@@ -47,12 +48,12 @@ fn get_count_of_matching_winning_numbers(winning_numbers: Vec<u8>, scratched_num
     intersection_vec.len() as u32
 }
 
-fn get_card_numbers_from_line (line: &str, left: bool) -> Vec<u8> {
+fn get_card_numbers_from_line(line: &str, left: bool) -> Vec<u8> {
     let mut card_numbers: Vec<u8> = Default::default();
 
     let nth: usize = match left {
         true => 0,
-        false => 1
+        false => 1,
     };
 
     if let Some(numbers) = line.split(':').nth(1) {
@@ -63,7 +64,7 @@ fn get_card_numbers_from_line (line: &str, left: bool) -> Vec<u8> {
             let mut trimmed_number_side = number_side.trim_end_matches(' ');
             trimmed_number_side = trimmed_number_side.trim_start_matches(' ');
 
-            for found_card_number in number_side.split(' ') {
+            for found_card_number in trimmed_number_side.split(' ') {
                 if found_card_number.is_empty() {
                     continue;
                 }
