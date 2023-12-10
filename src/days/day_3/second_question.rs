@@ -97,6 +97,7 @@ fn calculate_gear_ratio(gear: Vec<u16>) -> u32 {
         panic!("This is not a gear (too many part numbers): {:?}", gear)
     }
 
+    #[allow(clippy::get_first)]
     let first_part: u32 = *gear.get(0).unwrap() as u32;
     let second_part: u32 = *gear.get(1).unwrap() as u32;
 
