@@ -5,6 +5,7 @@ use std::io::BufRead;
 pub mod day_1;
 pub mod day_2;
 pub mod day_3;
+pub mod day_4;
 
 fn read_input_into_vector(source: &str) -> io::Result<Vec<String>> {
     let file = File::open(source)?;

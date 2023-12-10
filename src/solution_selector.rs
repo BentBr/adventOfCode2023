@@ -11,7 +11,7 @@ pub fn get_all_solutions() {
     // Defining green colour
     println!("\u{001b}[32mGetting all solutions...");
 
-    for day in 1..=3 {
+    for day in 1..=4 {
         load_solution(day)
     }
 }
@@ -24,6 +24,7 @@ fn load_solution(day: u8) {
         1 => days::day_1::solutions(),
         2 => days::day_2::solutions(),
         3 => days::day_3::solutions(),
+        4 => days::day_4::solutions(),
         _ => {
             // Resetting the colour
             print!("\u{001b}[0m");
