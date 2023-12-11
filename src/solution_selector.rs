@@ -26,6 +26,7 @@ fn load_solution(day: u8) {
         3 => days::day_3::solutions(),
         4 => days::day_4::solutions(),
         6 => days::day_6::solutions(),
+        7 => days::day_7::solutions(),
         _ => {
             // Resetting the colour
             print!("\u{001b}[0m");

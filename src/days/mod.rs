@@ -8,6 +8,7 @@ pub mod day_3;
 pub mod day_4;
 //pub mod day_5;
 pub mod day_6;
+pub mod day_7;
 
 fn read_input_into_vector(source: &str) -> io::Result<Vec<String>> {
     let file = File::open(source)?;
