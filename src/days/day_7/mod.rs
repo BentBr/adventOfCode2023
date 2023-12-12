@@ -1,6 +1,8 @@
-use crate::days::day_7::Card::{Eight, Five, Four, Nine, Seven, Six, Three, Two, A, J, K, Q, T};
+use crate::days::day_7::first_question::Card;
+use crate::days::day_7::first_question::Card::{
+    Eight, Five, Four, Nine, Seven, Six, Three, Two, A, J, K, Q, T,
+};
 use std::collections::{HashMap, HashSet};
-use std::hash::Hash;
 
 mod first_question;
 mod second_question;
@@ -9,44 +11,6 @@ mod tests;
 pub fn solutions() {
     first_question::solution();
     second_question::solution();
-}
-
-#[derive(Debug, PartialOrd, PartialEq, Hash, Eq)]
-enum Card {
-    A = 12,
-    K = 11,
-    Q = 10,
-    J = 9,
-    T = 8,
-    Nine = 7,
-    Eight = 6,
-    Seven = 5,
-    Six = 4,
-    Five = 3,
-    Four = 2,
-    Three = 1,
-    Two = 0,
-}
-
-impl Card {
-    #[allow(dead_code)]
-    fn get_value(&self) -> u8 {
-        match self {
-            A => 12,
-            K => 11,
-            Q => 10,
-            J => 9,
-            T => 8,
-            Nine => 7,
-            Eight => 6,
-            Seven => 5,
-            Six => 4,
-            Five => 3,
-            Four => 2,
-            Three => 1,
-            Two => 0,
-        }
-    }
 }
 
 fn is_five_of_a_kind(hand: &[Card]) -> bool {
@@ -116,7 +80,6 @@ fn is_three_of_a_kind(hand: &[Card]) -> bool {
     false
 }
 
-#[allow(unused)]
 fn is_two_pair(hand: &[Card]) -> bool {
     let mut freq: HashMap<&Card, u8> = HashMap::new();
     for card in hand {
@@ -140,7 +103,6 @@ fn is_two_pair(hand: &[Card]) -> bool {
     false
 }
 
-#[allow(unused)]
 fn is_one_pair(hand: &[Card]) -> bool {
     let unique_cards: HashSet<_> = hand.iter().collect();
 
@@ -151,7 +113,6 @@ fn is_one_pair(hand: &[Card]) -> bool {
     false
 }
 
-#[allow(unused)]
 fn match_hand_to_ranking(hand: &[Card]) -> u8 {
     if is_five_of_a_kind(hand) {
         return 6;
@@ -176,7 +137,6 @@ fn match_hand_to_ranking(hand: &[Card]) -> u8 {
 }
 
 // returns true if first hand wins
-#[allow(unused)]
 fn compare_high_card(hand1: &[Card], hand2: &[Card]) -> bool {
     for i in 0..5 {
         let card1 = hand1.get(i).unwrap().get_value();
@@ -227,7 +187,6 @@ fn match_char_to_card(char: &char) -> Card {
     card
 }
 
-#[allow(unused)]
 fn create_hand_from_string(line_string: &str) -> Vec<Card> {
     let mut return_hand: Vec<Card> = Default::default();
     let uppercase_sting = line_string.to_uppercase();
@@ -245,7 +204,6 @@ fn create_hand_from_string(line_string: &str) -> Vec<Card> {
     return_hand
 }
 
-#[allow(dead_code)]
 fn get_bid_from_string(line_string: &str) -> u16 {
     if let Some(bid_string) = line_string.split(' ').nth(1) {
         let bid: u16 = bid_string.parse::<u16>().unwrap();
