@@ -1,7 +1,5 @@
-use Card::{
-    Eight, Five, Four, Nine, Seven, Six, Three, Two, A, J, K, Q, T,
-};
 use std::collections::{HashMap, HashSet};
+use Card::{Eight, Five, Four, Nine, Seven, Six, Three, Two, A, J, K, Q, T};
 
 mod first_question;
 mod second_question;
@@ -57,7 +55,7 @@ impl Card {
             Four => 3,
             Three => 2,
             Two => 1,
-            J => 0
+            J => 0,
         }
     }
 }
@@ -202,7 +200,6 @@ fn compare_high_card(hand1: &[Card], hand2: &[Card], joker_style: bool) -> bool 
             card1 = hand1.get(i).unwrap().get_value();
             card2 = hand2.get(i).unwrap().get_value();
         }
-
 
         if card1 > card2 {
             return true;

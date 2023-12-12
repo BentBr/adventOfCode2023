@@ -1,4 +1,6 @@
-use crate::days::day_7::{Card, compare_hand_ranking, create_hand_from_string, get_bid_from_string};
+use crate::days::day_7::{
+    compare_hand_ranking, create_hand_from_string, get_bid_from_string, Card,
+};
 use crate::days::read_input_into_vector;
 use std::cmp::Ordering;
 

@@ -1,11 +1,16 @@
-use std::cmp::Ordering;
-use crate::days::day_7::{Card, compare_hand_ranking, create_hand_from_string, get_bid_from_string};
+use crate::days::day_7::{
+    compare_hand_ranking, create_hand_from_string, get_bid_from_string, Card,
+};
 use crate::days::read_input_into_vector;
+use std::cmp::Ordering;
 
 pub fn solution() {
     match read_input_into_vector("./src/days/day_7/test_input") {
         Ok(lines) => {
-            println!("Day 7: 'Ranking calculated new J order' - {}", calculate_ranking(lines));
+            println!(
+                "Day 7: 'Ranking calculated new J order' - {}",
+                calculate_ranking(lines)
+            );
         }
         Err(err) => {
             println!("\u{001b}[0mCould not load the file: {}", err)

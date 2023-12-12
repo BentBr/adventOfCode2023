@@ -25,6 +25,7 @@ fn load_solution(day: u8) {
         2 => days::day_2::solutions(),
         3 => days::day_3::solutions(),
         4 => days::day_4::solutions(),
+        5 => days::day_5::solutions(),
         6 => days::day_6::solutions(),
         7 => days::day_7::solutions(),
         _ => {
