@@ -49,9 +49,6 @@ impl Card {
     }
 }
 
-#[allow(unused)]
-fn match_char_against_value() {}
-
 fn is_five_of_a_kind(hand: &[Card]) -> bool {
     let unique_cards: HashSet<_> = hand.iter().collect();
 
@@ -155,23 +152,23 @@ fn is_one_pair(hand: &[Card]) -> bool {
 }
 
 #[allow(unused)]
-fn match_hand_to_ranking(hand: Vec<Card>) -> u8 {
-    if is_five_of_a_kind(&hand) {
+fn match_hand_to_ranking(hand: &[Card]) -> u8 {
+    if is_five_of_a_kind(hand) {
         return 6;
     }
-    if is_four_of_a_kind(&hand) {
+    if is_four_of_a_kind(hand) {
         return 5;
     }
-    if is_full_house(&hand) {
+    if is_full_house(hand) {
         return 4;
     }
-    if is_three_of_a_kind(&hand) {
+    if is_three_of_a_kind(hand) {
         return 3;
     }
-    if is_two_pair(&hand) {
+    if is_two_pair(hand) {
         return 2;
     }
-    if is_one_pair(&hand) {
+    if is_one_pair(hand) {
         return 1;
     }
 
@@ -180,10 +177,10 @@ fn match_hand_to_ranking(hand: Vec<Card>) -> u8 {
 
 // returns true if first hand wins
 #[allow(unused)]
-fn compare_high_card(hand1: Vec<Card>, hand2: Vec<Card>) -> bool {
-    for i in 0..4 {
-        let card1 = hand1.get(i).unwrap();
-        let card2 = hand2.get(i).unwrap();
+fn compare_high_card(hand1: &[Card], hand2: &[Card]) -> bool {
+    for i in 0..5 {
+        let card1 = hand1.get(i).unwrap().get_value();
+        let card2 = hand2.get(i).unwrap().get_value();
 
         if card1 > card2 {
             return true;
@@ -191,9 +188,6 @@ fn compare_high_card(hand1: Vec<Card>, hand2: Vec<Card>) -> bool {
         if card2 > card1 {
             return false;
         }
-
-        // If same we are continuing with next card
-        continue;
     }
 
     panic!("We must have found a decision earlier!");
@@ -239,7 +233,7 @@ fn create_hand_from_string(line_string: &str) -> Vec<Card> {
     let uppercase_sting = line_string.to_uppercase();
 
     if let Some(hand_string) = uppercase_sting.split(' ').next() {
-        if line_string.len() != 5 {
+        if hand_string.len() != 5 {
             panic!("No hand given: {}", line_string)
         }
 
@@ -260,4 +254,19 @@ fn get_bid_from_string(line_string: &str) -> u16 {
     }
 
     panic!("No bid found: {}", line_string);
+}
+
+// Returns true if hand1 has higher ranking. Otherwise false.
+fn compare_hand_ranking(hand1: &[Card], hand2: &[Card]) -> bool {
+    let ranking1: u8 = match_hand_to_ranking(hand1);
+    let ranking2: u8 = match_hand_to_ranking(hand2);
+
+    if ranking1 > ranking2 {
+        return true;
+    }
+    if ranking1 < ranking2 {
+        return false;
+    }
+
+    compare_high_card(hand1, hand2)
 }

@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod tests {
     use crate::days::day_7::{
-        compare_high_card, create_hand_from_string, get_bid_from_string, is_five_of_a_kind,
-        is_four_of_a_kind, is_full_house, is_one_pair, is_three_of_a_kind, is_two_pair,
-        match_char_to_card, match_hand_to_ranking, Card,
+        compare_hand_ranking, compare_high_card, create_hand_from_string, get_bid_from_string,
+        is_five_of_a_kind, is_four_of_a_kind, is_full_house, is_one_pair, is_three_of_a_kind,
+        is_two_pair, match_char_to_card, match_hand_to_ranking, Card,
     };
     #[test]
     fn test_create_hand_from_string_numeric() {
@@ -156,7 +156,7 @@ mod tests {
         let high2 = "34567";
         let hand_high2 = create_hand_from_string(&high2);
 
-        assert!(compare_high_card(hand_high2, hand_high1));
+        assert!(compare_high_card(&hand_high2, &hand_high1));
     }
 
     #[test]
@@ -225,7 +225,7 @@ mod tests {
         let hand2 = "AAAAT";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(match_hand_to_ranking(hand1) > match_hand_to_ranking(hand2))
+        assert!(match_hand_to_ranking(&hand1) > match_hand_to_ranking(&hand2))
     }
 
     #[test]
@@ -235,7 +235,7 @@ mod tests {
         let hand2 = "AAQAT";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(match_hand_to_ranking(hand1) > match_hand_to_ranking(hand2))
+        assert!(match_hand_to_ranking(&hand1) > match_hand_to_ranking(&hand2))
     }
 
     #[test]
@@ -245,7 +245,7 @@ mod tests {
         let hand2 = "AAA4T";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(match_hand_to_ranking(hand1) > match_hand_to_ranking(hand2))
+        assert!(match_hand_to_ranking(&hand1) > match_hand_to_ranking(&hand2))
     }
 
     #[test]
@@ -255,7 +255,7 @@ mod tests {
         let hand2 = "AAA6T";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(match_hand_to_ranking(hand1) < match_hand_to_ranking(hand2))
+        assert!(match_hand_to_ranking(&hand1) < match_hand_to_ranking(&hand2))
     }
 
     #[test]
@@ -265,6 +265,41 @@ mod tests {
         let hand2 = "AA45T";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(match_hand_to_ranking(hand1) > match_hand_to_ranking(hand2))
+        assert!(match_hand_to_ranking(&hand1) > match_hand_to_ranking(&hand2))
+    }
+
+    #[test]
+    fn test_compare_hand_ranking() {
+        // 2 pair vs 1 pair
+        let hand1 = "AAQQT";
+        let hand1 = create_hand_from_string(&hand1);
+        let hand2 = "AA45T";
+        let hand2 = create_hand_from_string(&hand2);
+
+        assert!(compare_hand_ranking(&hand1, &hand2));
+
+        // Five vs 1 pair
+        let hand1 = "AAAAA";
+        let hand1 = create_hand_from_string(&hand1);
+        let hand2 = "AA45T";
+        let hand2 = create_hand_from_string(&hand2);
+
+        assert!(compare_hand_ranking(&hand1, &hand2));
+
+        // High card vs high card
+        let hand1 = "34567";
+        let hand1 = create_hand_from_string(&hand1);
+        let hand2 = "24567";
+        let hand2 = create_hand_from_string(&hand2);
+
+        assert!(compare_hand_ranking(&hand1, &hand2));
+
+        // 1 pair vs full house
+        let hand1 = "AQKTT";
+        let hand1 = create_hand_from_string(&hand1);
+        let hand2 = "QQQ22";
+        let hand2 = create_hand_from_string(&hand2);
+
+        assert!(!compare_hand_ranking(&hand1, &hand2));
     }
 }
