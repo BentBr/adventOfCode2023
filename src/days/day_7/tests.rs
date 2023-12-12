@@ -85,8 +85,8 @@ mod tests {
         let string_negative = "AAJAA";
         let hand_negative = create_hand_from_string(&string_negative);
 
-        assert_eq!(is_five_of_a_kind(&hand_positive), true);
-        assert_eq!(is_five_of_a_kind(&hand_negative), false);
+        assert_eq!(is_five_of_a_kind(&hand_positive, false), true);
+        assert_eq!(is_five_of_a_kind(&hand_negative, false), false);
     }
 
     #[test]
@@ -96,8 +96,8 @@ mod tests {
         let string_negative = "AQJAA";
         let hand_negative = create_hand_from_string(&string_negative);
 
-        assert_eq!(is_four_of_a_kind(&hand_positive), true);
-        assert_eq!(is_four_of_a_kind(&hand_negative), false);
+        assert_eq!(is_four_of_a_kind(&hand_positive, false), true);
+        assert_eq!(is_four_of_a_kind(&hand_negative, false), false);
     }
 
     #[test]
@@ -109,9 +109,9 @@ mod tests {
         let string_negative_four = "2AAAA";
         let hand_negative_four = create_hand_from_string(&string_negative_four);
 
-        assert_eq!(is_three_of_a_kind(&hand_positive), true);
-        assert_eq!(is_three_of_a_kind(&hand_negative), false);
-        assert_eq!(is_three_of_a_kind(&hand_negative_four), false);
+        assert_eq!(is_three_of_a_kind(&hand_positive, false), true);
+        assert_eq!(is_three_of_a_kind(&hand_negative, false), false);
+        assert_eq!(is_three_of_a_kind(&hand_negative_four, false), false);
     }
 
     #[test]
@@ -123,9 +123,9 @@ mod tests {
         let string_negative_same = "AAJAA";
         let hand_negative_same = create_hand_from_string(&string_negative_same);
 
-        assert_eq!(is_two_pair(&hand_positive), true);
-        assert_eq!(is_two_pair(&hand_negative_three), false);
-        assert_eq!(is_two_pair(&hand_negative_same), false);
+        assert_eq!(is_two_pair(&hand_positive, false), true);
+        assert_eq!(is_two_pair(&hand_negative_three, false), false);
+        assert_eq!(is_two_pair(&hand_negative_same, false), false);
     }
     #[test]
     fn test_is_one_pair() {
@@ -134,8 +134,8 @@ mod tests {
         let string_negative = "AQJAA";
         let hand_negative = create_hand_from_string(&string_negative);
 
-        assert_eq!(is_one_pair(&hand_positive), true);
-        assert_eq!(is_one_pair(&hand_negative), false);
+        assert_eq!(is_one_pair(&hand_positive, false), true);
+        assert_eq!(is_one_pair(&hand_negative, false), false);
     }
 
     #[test]
@@ -145,8 +145,8 @@ mod tests {
         let string_negative = "AQJAA";
         let hand_negative = create_hand_from_string(&string_negative);
 
-        assert_eq!(is_full_house(&hand_positive), true);
-        assert_eq!(is_full_house(&hand_negative), false);
+        assert_eq!(is_full_house(&hand_positive, false), true);
+        assert_eq!(is_full_house(&hand_negative, false), false);
     }
 
     #[test]
@@ -156,7 +156,7 @@ mod tests {
         let high2 = "34567";
         let hand_high2 = create_hand_from_string(&high2);
 
-        assert!(compare_high_card(&hand_high2, &hand_high1));
+        assert!(compare_high_card(&hand_high2, &hand_high1, false));
     }
 
     #[test]
@@ -225,7 +225,7 @@ mod tests {
         let hand2 = "AAAAT";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(match_hand_to_ranking(&hand1) > match_hand_to_ranking(&hand2))
+        assert!(match_hand_to_ranking(&hand1, false) > match_hand_to_ranking(&hand2, false))
     }
 
     #[test]
@@ -235,7 +235,7 @@ mod tests {
         let hand2 = "AAQAT";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(match_hand_to_ranking(&hand1) > match_hand_to_ranking(&hand2))
+        assert!(match_hand_to_ranking(&hand1, false) > match_hand_to_ranking(&hand2, false))
     }
 
     #[test]
@@ -245,7 +245,7 @@ mod tests {
         let hand2 = "AAA4T";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(match_hand_to_ranking(&hand1) > match_hand_to_ranking(&hand2))
+        assert!(match_hand_to_ranking(&hand1, false) > match_hand_to_ranking(&hand2, false))
     }
 
     #[test]
@@ -255,7 +255,7 @@ mod tests {
         let hand2 = "AAA6T";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(match_hand_to_ranking(&hand1) < match_hand_to_ranking(&hand2))
+        assert!(match_hand_to_ranking(&hand1, false) < match_hand_to_ranking(&hand2, false))
     }
 
     #[test]
@@ -265,7 +265,7 @@ mod tests {
         let hand2 = "AA45T";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(match_hand_to_ranking(&hand1) > match_hand_to_ranking(&hand2))
+        assert!(match_hand_to_ranking(&hand1, false) > match_hand_to_ranking(&hand2, false))
     }
 
     #[test]
@@ -276,7 +276,7 @@ mod tests {
         let hand2 = "AA45T";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(compare_hand_ranking(&hand1, &hand2));
+        assert!(compare_hand_ranking(&hand1, &hand2, false));
 
         // Five vs 1 pair
         let hand1 = "AAAAA";
@@ -284,7 +284,7 @@ mod tests {
         let hand2 = "AA45T";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(compare_hand_ranking(&hand1, &hand2));
+        assert!(compare_hand_ranking(&hand1, &hand2, false));
 
         // High card vs high card
         let hand1 = "34567";
@@ -292,7 +292,7 @@ mod tests {
         let hand2 = "24567";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(compare_hand_ranking(&hand1, &hand2));
+        assert!(compare_hand_ranking(&hand1, &hand2, false));
 
         // 1 pair vs full house
         let hand1 = "AQKTT";
@@ -300,6 +300,6 @@ mod tests {
         let hand2 = "QQQ22";
         let hand2 = create_hand_from_string(&hand2);
 
-        assert!(!compare_hand_ranking(&hand1, &hand2));
+        assert!(!compare_hand_ranking(&hand1, &hand2, false));
     }
 }

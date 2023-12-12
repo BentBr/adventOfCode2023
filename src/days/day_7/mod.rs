@@ -1,5 +1,4 @@
-use crate::days::day_7::first_question::Card;
-use crate::days::day_7::first_question::Card::{
+use Card::{
     Eight, Five, Four, Nine, Seven, Six, Three, Two, A, J, K, Q, T,
 };
 use std::collections::{HashMap, HashSet};
@@ -8,12 +7,67 @@ mod first_question;
 mod second_question;
 mod tests;
 
+#[derive(Debug, PartialOrd, PartialEq, Hash, Eq)]
+enum Card {
+    A = 12,
+    K = 11,
+    Q = 10,
+    J = 9,
+    T = 8,
+    Nine = 7,
+    Eight = 6,
+    Seven = 5,
+    Six = 4,
+    Five = 3,
+    Four = 2,
+    Three = 1,
+    Two = 0,
+}
+
+impl Card {
+    fn get_value(&self) -> u8 {
+        match self {
+            A => 12,
+            K => 11,
+            Q => 10,
+            J => 9,
+            T => 8,
+            Nine => 7,
+            Eight => 6,
+            Seven => 5,
+            Six => 4,
+            Five => 3,
+            Four => 2,
+            Three => 1,
+            Two => 0,
+        }
+    }
+
+    fn get_value_joker(&self) -> u8 {
+        match self {
+            A => 12,
+            K => 11,
+            Q => 10,
+            T => 9,
+            Nine => 8,
+            Eight => 7,
+            Seven => 6,
+            Six => 5,
+            Five => 4,
+            Four => 3,
+            Three => 2,
+            Two => 1,
+            J => 0
+        }
+    }
+}
+
 pub fn solutions() {
     first_question::solution();
     second_question::solution();
 }
 
-fn is_five_of_a_kind(hand: &[Card]) -> bool {
+fn is_five_of_a_kind(hand: &[Card], joker_style: bool) -> bool {
     let unique_cards: HashSet<_> = hand.iter().collect();
 
     if unique_cards.len() == 1 {
@@ -22,7 +76,7 @@ fn is_five_of_a_kind(hand: &[Card]) -> bool {
     false
 }
 
-fn is_four_of_a_kind(hand: &[Card]) -> bool {
+fn is_four_of_a_kind(hand: &[Card], joker_style: bool) -> bool {
     let mut freq: HashMap<&Card, u8> = HashMap::new();
     for card in hand {
         *freq.entry(card).or_insert(0) += 1;
@@ -36,7 +90,7 @@ fn is_four_of_a_kind(hand: &[Card]) -> bool {
     false
 }
 
-fn is_full_house(hand: &[Card]) -> bool {
+fn is_full_house(hand: &[Card], joker_style: bool) -> bool {
     let mut freq: HashMap<&Card, u8> = HashMap::new();
     for card in hand {
         *freq.entry(card).or_insert(0) += 1;
@@ -58,7 +112,7 @@ fn is_full_house(hand: &[Card]) -> bool {
     false
 }
 
-fn is_three_of_a_kind(hand: &[Card]) -> bool {
+fn is_three_of_a_kind(hand: &[Card], joker_style: bool) -> bool {
     let unique_cards: HashSet<_> = hand.iter().collect();
 
     let mut freq: HashMap<&Card, u8> = HashMap::new();
@@ -80,7 +134,7 @@ fn is_three_of_a_kind(hand: &[Card]) -> bool {
     false
 }
 
-fn is_two_pair(hand: &[Card]) -> bool {
+fn is_two_pair(hand: &[Card], joker_style: bool) -> bool {
     let mut freq: HashMap<&Card, u8> = HashMap::new();
     for card in hand {
         *freq.entry(card).or_insert(0) += 1;
@@ -103,7 +157,7 @@ fn is_two_pair(hand: &[Card]) -> bool {
     false
 }
 
-fn is_one_pair(hand: &[Card]) -> bool {
+fn is_one_pair(hand: &[Card], joker_style: bool) -> bool {
     let unique_cards: HashSet<_> = hand.iter().collect();
 
     if unique_cards.len() == 4 {
@@ -113,23 +167,23 @@ fn is_one_pair(hand: &[Card]) -> bool {
     false
 }
 
-fn match_hand_to_ranking(hand: &[Card]) -> u8 {
-    if is_five_of_a_kind(hand) {
+fn match_hand_to_ranking(hand: &[Card], joker_style: bool) -> u8 {
+    if is_five_of_a_kind(hand, joker_style) {
         return 6;
     }
-    if is_four_of_a_kind(hand) {
+    if is_four_of_a_kind(hand, joker_style) {
         return 5;
     }
-    if is_full_house(hand) {
+    if is_full_house(hand, joker_style) {
         return 4;
     }
-    if is_three_of_a_kind(hand) {
+    if is_three_of_a_kind(hand, joker_style) {
         return 3;
     }
-    if is_two_pair(hand) {
+    if is_two_pair(hand, joker_style) {
         return 2;
     }
-    if is_one_pair(hand) {
+    if is_one_pair(hand, joker_style) {
         return 1;
     }
 
@@ -137,10 +191,18 @@ fn match_hand_to_ranking(hand: &[Card]) -> u8 {
 }
 
 // returns true if first hand wins
-fn compare_high_card(hand1: &[Card], hand2: &[Card]) -> bool {
+fn compare_high_card(hand1: &[Card], hand2: &[Card], joker_style: bool) -> bool {
     for i in 0..5 {
-        let card1 = hand1.get(i).unwrap().get_value();
-        let card2 = hand2.get(i).unwrap().get_value();
+        let card1: u8;
+        let card2: u8;
+        if joker_style {
+            card1 = hand1.get(i).unwrap().get_value_joker();
+            card2 = hand2.get(i).unwrap().get_value_joker();
+        } else {
+            card1 = hand1.get(i).unwrap().get_value();
+            card2 = hand2.get(i).unwrap().get_value();
+        }
+
 
         if card1 > card2 {
             return true;
@@ -215,9 +277,9 @@ fn get_bid_from_string(line_string: &str) -> u16 {
 }
 
 // Returns true if hand1 has higher ranking. Otherwise false.
-fn compare_hand_ranking(hand1: &[Card], hand2: &[Card]) -> bool {
-    let ranking1: u8 = match_hand_to_ranking(hand1);
-    let ranking2: u8 = match_hand_to_ranking(hand2);
+fn compare_hand_ranking(hand1: &[Card], hand2: &[Card], joker_style: bool) -> bool {
+    let ranking1: u8 = match_hand_to_ranking(hand1, joker_style);
+    let ranking2: u8 = match_hand_to_ranking(hand2, joker_style);
 
     if ranking1 > ranking2 {
         return true;
@@ -226,5 +288,5 @@ fn compare_hand_ranking(hand1: &[Card], hand2: &[Card]) -> bool {
         return false;
     }
 
-    compare_high_card(hand1, hand2)
+    compare_high_card(hand1, hand2, joker_style)
 }

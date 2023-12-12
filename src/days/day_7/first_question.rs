@@ -1,45 +1,6 @@
-use crate::days::day_7::{compare_hand_ranking, create_hand_from_string, get_bid_from_string};
-use Card::{Eight, Five, Four, Nine, Seven, Six, Three, Two, A, J, K, Q, T};
-
+use crate::days::day_7::{Card, compare_hand_ranking, create_hand_from_string, get_bid_from_string};
 use crate::days::read_input_into_vector;
 use std::cmp::Ordering;
-
-#[derive(Debug, PartialOrd, PartialEq, Hash, Eq)]
-pub(crate) enum Card {
-    A = 12,
-    K = 11,
-    Q = 10,
-    J = 9,
-    T = 8,
-    Nine = 7,
-    Eight = 6,
-    Seven = 5,
-    Six = 4,
-    Five = 3,
-    Four = 2,
-    Three = 1,
-    Two = 0,
-}
-
-impl Card {
-    pub(crate) fn get_value(&self) -> u8 {
-        match self {
-            A => 12,
-            K => 11,
-            Q => 10,
-            J => 9,
-            T => 8,
-            Nine => 7,
-            Eight => 6,
-            Seven => 5,
-            Six => 4,
-            Five => 3,
-            Four => 2,
-            Three => 1,
-            Two => 0,
-        }
-    }
-}
 
 pub fn solution() {
     match read_input_into_vector("./src/days/day_7/input") {
@@ -70,7 +31,7 @@ fn calculate_ranking(lines: Vec<String>) -> u32 {
     sorted_hands.sort_by(|a, b| {
         let hand_a = &all_hands[a.0];
         let hand_b = &all_hands[b.0];
-        if compare_hand_ranking(hand_a, hand_b) {
+        if compare_hand_ranking(hand_a, hand_b, false) {
             Ordering::Less
         } else {
             Ordering::Greater
